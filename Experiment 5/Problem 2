@@ -1,0 +1,126 @@
+Create a menu-based Java application with the following options. 1.Add an Employee 2. Display All 3. Exit If option 1 is selected, the application should gather details of the employee like employee name, employee id, designation and salary and store it in a file. If option 2 is selected, the application should display all the employee details. If option 3 is selected the application should exit.
+Code:-
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+class Employee implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private String name;
+    private int id;
+    private String designation;
+    private double salary;
+
+    public Employee(String name, int id, String designation, double salary) {
+        this.name = name;
+        this.id = id;
+        this.designation = designation;
+        this.salary = salary;
+    }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "name='" + name + '\'' +
+                ", id=" + id +
+                ", designation='" + designation + '\'' +
+                ", salary=" + salary +
+                '}';
+    }
+}
+
+public class EmployeeManagement {
+    private static final String FILE_NAME = "employees.dat";
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        List<Employee> employees = new ArrayList<>();
+
+        // Load existing employees from file
+        loadEmployees(employees);
+
+        while (true) {
+            System.out.println("Menu:");
+            System.out.println("1. Add an Employee");
+            System.out.println("2. Display All Employees");
+            System.out.println("3. Exit");
+            System.out.print("Select an option: ");
+            int option = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            switch (option) {
+                case 1:
+                    System.out.print("Enter Employee Name: ");
+                    String name = scanner.nextLine();
+                    System.out.print("Enter Employee ID: ");
+                    int id = scanner.nextInt();
+                    scanner.nextLine(); // Consume newline
+                    System.out.print("Enter Designation: ");
+                    String designation = scanner.nextLine();
+                    System.out.print("Enter Salary: ");
+                    double salary = scanner.nextDouble();
+                    employees.add(new Employee(name, id, designation, salary));
+                    saveEmployees(employees);
+                    break;
+                case 2:
+                    displayEmployees(employees);
+                    break;
+                case 3:
+                    System.out.println("Exiting...");
+                    scanner.close();
+                    return;
+                default:
+                    System.out.println("Invalid option. Please try again.");
+            }
+        }
+    }
+
+    private static void saveEmployees(List<Employee> employees) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_NAME))) {
+            oos.writeObject(employees);
+        } catch (IOException e) {
+            System.out.println("Error saving employees: " + e.getMessage());
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void loadEmployees(List<Employee> employees) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE_NAME))) {
+            employees
+
+Output:-
+Menu:
+1. Add an Employee
+2. Display All Employees
+3. Exit
+Select an option: 1
+Enter Employee Name: Alice
+Enter Employee ID: 101
+Enter Designation: Developer
+Enter Salary: 75000
+
+Menu:
+1. Add an Employee
+2. Display All Employees
+3. Exit
+Select an option: 1
+Enter Employee Name: Bob
+Enter Employee ID: 102
+Enter Designation: Manager
+Enter Salary: 90000
+
+Menu:
+1. Add an Employee
+2. Display All Employees
+3. Exit
+Select an option: 2
+Employee{name='Alice', id=101, designation='Developer', salary=75000.0}
+Employee{name='Bob', id=102, designation='Manager', salary=90000.0}
+
+Menu:
+1. Add an Employee
+2. Display All Employees
+3. Exit
+Select an option: 3
+Exiting...
